@@ -36,10 +36,11 @@ const userFulName = user.first_name + " " + user.last_name;
                                     Dashboard
                                 </NavLink>
                             </div>
-                        </div>
-
-                        <div class="pr-4  mx-auto my-auto text-right  " >
-                           {{ user.last_name !== null ? userFulName : user.first_name }}
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('posts.index')" :active="route().current('posts.index')">
+                                    Posts
+                                </NavLink>
+                            </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -52,7 +53,7 @@ const userFulName = user.first_name + " " + user.last_name;
                                                 type="button"
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                             >
-                                                {{ $page.props.auth.user.name }}
+                                               {{ user.last_name !== null ? userFulName : user.first_name }}
 
                                                 <svg
                                                     class="ms-2 -me-0.5 h-4 w-4"
