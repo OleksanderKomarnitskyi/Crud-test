@@ -5,9 +5,12 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
-
+import {Link, usePage} from '@inertiajs/vue3';
 const showingNavigationDropdown = ref(false);
+
+const user = usePage().props.auth.user;
+const userFulName = user.first_name + " " + user.last_name;
+
 </script>
 
 <template>
@@ -33,6 +36,10 @@ const showingNavigationDropdown = ref(false);
                                     Dashboard
                                 </NavLink>
                             </div>
+                        </div>
+
+                        <div class="pr-4  mx-auto my-auto text-right  " >
+                           {{ user.last_name !== null ? userFulName : user.first_name }}
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -65,9 +72,7 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
-                                        </DropdownLink>
+                                        <DropdownLink :href="route('logout')" method="post" as="button"> Log Out </DropdownLink>
                                     </template>
                                 </Dropdown>
                             </div>
