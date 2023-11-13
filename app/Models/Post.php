@@ -11,12 +11,8 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'phone',
-        'address',
-        'password',
+        'title',
+        'content',
     ];
 
     public function author(): BelongsTo
