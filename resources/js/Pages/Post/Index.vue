@@ -19,6 +19,7 @@ export default {
     props: [
         'posts'
     ],
+
     components: {
         Link,
         Head,
@@ -69,6 +70,13 @@ export default {
                 </div>
             </div>
             <pagination v-if="posts.meta" class="mt-6" :links="posts.meta.links" />
+        </div>
+        <div v-if="posts.data.length === 0" >
+            <div class="mt-8 pt-8 border-t border-gray-300" >
+                <div class="mb-4 pl-4 btn_row_grouper" >
+                    <h1> Not found posts </h1>
+                </div>
+            </div>
         </div>
     </div>
 </template>
