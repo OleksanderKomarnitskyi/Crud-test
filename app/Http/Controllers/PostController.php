@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Post\StorePostRequest;
+use App\Http\Requests\Post\SavePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
@@ -54,10 +54,12 @@ class PostController extends Controller
         return Inertia::render('Post/Create');
     }
 
+
     /**
-     * @throws Exception
+     * @param SavePostRequest $request
+     * @return RedirectResponse
      */
-    public function store(StorePostRequest $request)
+    public function store(SavePostRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
@@ -66,24 +68,42 @@ class PostController extends Controller
             $this->postService->create($data);
             return redirect()->route('posts.index');
         } catch (Exception $exception) {
-            return response()->withException($exception)->setStatusCode(500);
+            return redirect()->back(500)->withException($exception);
         }
 
     }
 
-    public function edit(Request $request): Response
+    /**
+     * @param Post $post
+     * @return Response
+     */
+    public function edit(Post $post): Response
     {
-        dd("edit");
+        return Inertia::render("Post/Edit", compact('post'));
     }
 
-    public function update(Request $request): RedirectResponse
+    /**
+     * @param Post $post
+     * @param SavePostRequest $request
+     * @return RedirectResponse
+     */
+    public function update(Post $post, SavePostRequest $request): RedirectResponse
     {
-       dd("update");
+        if (!$post->user_id || ($post->user_id != $request->user()->id) ) {
+            return back()->withErrors('Permission to execute is denied')->setStatusCode(403);
+        }
+        $data = $request->validated();
+        try {
+            $this->postService->update($post, $data);
+            return redirect()->route('posts.index');
+        } catch (Exception $exception) {
+            return redirect()->back(500)->withException($exception);
+        }
     }
 
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Post $post): RedirectResponse
     {
-        dd('destroy');
+        dd($post);
 
     }
 }

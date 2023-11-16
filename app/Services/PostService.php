@@ -29,21 +29,24 @@ class PostService extends MySqlService
         }
     }
 
+
     /**
      * @param Post $post
      * @param array $data
-     * @return void
+     * @return bool
      * @throws Exception
      */
-    public function update(Post $post, array $data): void
+    public function update(Post $post, array $data): bool
     {
         DB::beginTransaction();
         try {
-            $post->update($data);
+            $result = $post->update($data);
             DB::commit();
 
+            return $result;
         } catch (Exception $exception) {
-            $this->handleException($exception);
+            $this->handleException($exception, 'update post is fail');
+            throw $exception;
         }
 
     }
