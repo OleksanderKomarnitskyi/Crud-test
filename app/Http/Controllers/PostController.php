@@ -101,9 +101,22 @@ class PostController extends Controller
         }
     }
 
-    public function destroy(Post $post): RedirectResponse
+    /**
+     * @param Post $post
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function destroy(Post $post, Request $request): RedirectResponse
     {
-        dd($post);
+        if (!$post->user_id || ($post->user_id != $request->user()->id) ) {
+            return back()->withErrors('Permission to execute is denied')->setStatusCode(403);
+        }
+        try {
+            $post->delete();
+            return redirect()->route('posts.index');
+        } catch (Exception $exception) {
+            return redirect()->back(500)->withException($exception);
+        }
 
     }
 }

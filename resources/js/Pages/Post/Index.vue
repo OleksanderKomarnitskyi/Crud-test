@@ -1,37 +1,50 @@
-<script xmlns="http://www.w3.org/1999/html">
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+<script setup>
+
 import Pagination from "@/Components/Pagination.vue";
-import {Head, Link, useForm} from "@inertiajs/vue3";
+import {Head, Link, useForm, usePage} from "@inertiajs/vue3";
+import DangerButton from "@/Components/DangerButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Modal from "@/Components/Modal.vue";
+import {ref} from "vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 
-const deletePost = (id) => {
-    console.log(id, " post  delete")
-    // form.delete(route('profile.destroy'), {
-    //     preserveScroll: true,
-    //     onSuccess: () => closeModal(),
-    //     onError: () => passwordInput.value.focus(),
-    //     onFinish: () => form.reset(),
-    // });
+const confirmingPostDeletion = ref(false);
+const passwordInput = ref(null);
+const posts = ref(usePage().props.posts);
+const form = useForm({});
+const postId = ref(null);
+
+
+const confirmPostDeletion = (id) => {
+  postId.value = id;
+  confirmingPostDeletion.value = true;
 };
-export default {
-    name: "post-index",
-    layout: AuthenticatedLayout,
 
-    props: [
-        'posts'
-    ],
+const closeModal = () => {
+  confirmingPostDeletion.value = false;
+  form.reset();
+};
 
-    components: {
-        Link,
-        Head,
-        AuthenticatedLayout,
-        Pagination
-    },
+const deletePost = () => {
+    form.delete(route('posts.destroy', postId.value), {
+        preserveScroll: true,
+        onSuccess: () => {
+          const indexToDelete = posts.value.data.findIndex(post => post.id === postId.value);
+          if (indexToDelete !== -1) {
+            posts.value.data.splice(indexToDelete, 1);
+          }
+          closeModal();
+        },
+        onError: () => postId.value.focus(),
+        onFinish: () => form.reset(),
 
-}
+    });
+};
 
 </script>
 
 <template>
+  <AuthenticatedLayout>
     <Head title="May Posts" />
     <div class="mx-40" >
         <div class="pt-4 pl-4 btn_row_grouper">
@@ -56,10 +69,8 @@ export default {
                                 Edit
                             </Link>
                         </div>
-                        <div class="py-1 hover:bg-red-500 w-24 bg-green-500 rounded-lg text-sm text-center text-white"  style="cursor: pointer">
-                            <Link @click="deletePost(post.id)">
-                                Delete
-                            </Link>
+                        <div class="py-1 hover:bg-red-500 w-24 rounded-lg text-sm text-center text-white"  style="cursor: pointer">
+                          <DangerButton @click="confirmPostDeletion(post.id)">Delete</DangerButton>
                         </div>
                         <div class="text-sm text-right" style="display: contents">
                             {{ post.date }}
@@ -79,6 +90,26 @@ export default {
             </div>
         </div>
     </div>
+  </AuthenticatedLayout>
+
+  <Modal :show="confirmingPostDeletion" @close="closeModal">
+    <div class="p-6">
+      <h2 class="text-lg font-medium text-gray-900">
+        Are you sure you want to delete post?
+      </h2>
+
+      <div class="mt-6 flex justify-end">
+        <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+
+        <DangerButton
+            class="ms-3"
+            @click="deletePost">
+          Delete post
+        </DangerButton>
+      </div>
+    </div>
+  </Modal>
+
 </template>
 
 <style>

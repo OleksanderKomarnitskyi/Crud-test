@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -39,7 +40,10 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($data as $item) {
-            User::create($item);
+           $user = User::create($item);
+            $user->posts()->createMany(
+                Post::factory()->count(20)->make()->toArray()
+            );
         }
 
     }
