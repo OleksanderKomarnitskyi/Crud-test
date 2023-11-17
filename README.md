@@ -8,16 +8,17 @@ Laravel 10
 
 php 8.1
 
-DB sqlite можна перключити на звичайну mysql або іншу реляційну базу даних
-
 inertiajs/vue3 and tailwindcss для фронтової чвстини
 
 Для розвертанні та запуску проекту виконати нвступну послідовність
-- git clone 
+- git clone git@github.com:OleksanderKomarnitskyi/Crud-test.git
 - composer install
 - cp .env.example .env   створити базовий конфіг
 
-для підключення бази даних викорстано драйвер sqlite
+для підключення бази даних викорстано драйвер 
+
+- sqlite
+
 але можна встановити і стандартний варіант
 
 - php artisan key:generate
